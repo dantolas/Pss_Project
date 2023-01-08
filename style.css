@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+
+body{
+    background: linear-gradient(to right, #66D3FA, #3C99DC);
+    font-family: 'Montserrat', sans-serif;
+}
+
+header{
+    width: 100%;
+}
+
+#mainDiv{
+    font-family: 'Montserrat', sans-serif;
+}
+
+#loginImage{
+    width: 10rem;
+}
+
+#loginInfo{
+    font-size: larger;
+    font-weight: 600;
+    width: 100%;
+}
+

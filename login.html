@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
+    
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <title>loginPage</title>
+</head>
+<body>
+
+    <div class="container rounded mt-5 bg-light w-25" id="mainDiv">
+        <!-- Content here -->
+        <div class="container text-center rounded-circle container-md" id="loginImage">
+            <!-- Content here -->
+            <img src="images/SPSE-Jecna_Logo.png" class="img-thumbnail rounded-circle" alt="school logo">
+        </div>
+       
+        <form action="loginScript.php" method="post">
+            <div class="mb-3 text-dark">
+              <label for="username" id="UsernameLabel" class="form-label">Username</label>
+              <input type="username" placeholder="username / e-mail" name="username" class="form-control" id="username" aria-describedby="userHelp" required>
+              <div id="userHelp" class="form-text">We'll never share your email with anyone else.</div>
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputPassword1" class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" id="exampleInputPassword1" required>
+              <div id="passwordHelp" class="form-text"></div>
+            </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="exampleCheck1">
+              <label class="form-check-label" for="exampleCheck1">Remember me</label>
+            </div>
+            <div class="form-text pb-2"><a href="index.html" >Login anonymously</a></div>
+            <button type="submit" id="submit" class="btn mb-2 btn-primary w-25">Submit</button>
+          </form>
+
+       </div>
+    
+</body>
+
+
+
+<script>
+ 
+</script>
+
+
+</html>
