@@ -1,6 +1,6 @@
 <?php
 
-    define('DB_NAME', 'test2');
+    define('DB_NAME', 'pss_project_rozvrh');
     define('DB_USER', 'admin');
     define('DB_PASSWORD', 'admin');
     define('DB_HOST', '127.0.0.1');
