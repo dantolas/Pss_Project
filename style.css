@@ -23,3 +23,14 @@ header{
     width: 100%;
 }
 
+
+#userSpan{
+    font-size: 14px;
+    font-style: oblique;
+}
+
+#passwordSpan{
+    font-size: 14px;
+    font-style: oblique;
+}
+

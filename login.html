@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="style.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
+    <script src="loginScript.js" defer></script>
+    
     
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
@@ -20,16 +22,17 @@
             <img src="images/SPSE-Jecna_Logo.png" class="img-thumbnail rounded-circle" alt="school logo">
         </div>
        
-        <form action="loginScript.php" method="post">
+        <form id="form"  method="post">
             <div class="mb-3 text-dark">
               <label for="username" id="UsernameLabel" class="form-label">Username</label>
-              <input type="username" placeholder="username / e-mail" name="username" class="form-control" id="username" aria-describedby="userHelp" required>
+              <input type="username"  id="username" placeholder="username / e-mail" name="username" class="form-control" id="username" required>
+              <span id="userSpan"></span>
               <div id="userHelp" class="form-text">We'll never share your email with anyone else.</div>
             </div>
             <div class="mb-3">
               <label for="exampleInputPassword1" class="form-label">Password</label>
-              <input type="password" name="password" class="form-control" id="exampleInputPassword1" required>
-              <div id="passwordHelp" class="form-text"></div>
+              <input type="password" name="password"  class="form-control" id="password" required>
+              <span id="passwordSpan"></span>
             </div>
             <div class="mb-3 form-check">
               <input type="checkbox" class="form-check-input" id="exampleCheck1">
