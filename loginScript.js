@@ -57,30 +57,32 @@ function loginCheck(userdataJSON){
 };
 
 function validLogin(userdata){
+  var name = document.getElementById("username").value;
     if(userdata['role'] == 'student'){
-      window.location.replace("index.html");
+      window.location.href ="index.html?data="+JSON.stringify(userdata)+"&username="+name;
       return;
     }
 
     if(userdata['role'] == 'ucitel'){
-      window.location.replace("indexTeacher.html");
+      window.location.href ="indexTeacher.html?data=userdata";
       return;
     }
 
     if(userdata['role'] == 'admin'){
-      window.location.replace("indexAdmin.html");
+      window.location.href ="indexAdmin.html?data=userdata";
       return;
     }
     
 }
 
-
+//#region Invalid Login - Informs user about wrong username or password
 function invalidLogin(userdata){
   
     if(typeof userdata['jmeno'] != 'undefined'){
       console.log("Password wrong");
       document.querySelector('#passwordSpan').innerHTML = "Password incorrect.";
-    document.querySelector('#passwordSpan').style.color = "red";
+      document.querySelector('#passwordSpan').style.color = "red";
+      document.querySelector('#userSpan').innerHTML = "";
       return;
     }
 
@@ -90,7 +92,9 @@ function invalidLogin(userdata){
     console.log("Username wrong");
   
 }
+//#endregion
 
+//#region Original ajax post
 //Function that can send a post to PHP
 //------------------------------------
 //=>This was supposed to be the main function to send a post to PHP
@@ -133,6 +137,7 @@ function invalidLogin(userdata){
 //     }
 //   }
 // }
+//#endregion
 
 function AjaxPost() {
   var name = document.getElementById("username").value;
@@ -148,7 +153,7 @@ function AjaxPost() {
                                   loginCheck(res);
                   },
           error: function() {
-            alert('Not OKay');
+            alert('Not Okay');
           }
       });
  
