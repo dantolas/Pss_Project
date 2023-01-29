@@ -1,6 +1,6 @@
 
 //---Main Code
-let xd;
+console.log('login js fired');
 
 const submitButton = document.querySelector("#submit");
 submitButton.addEventListener('click',function(e){
@@ -59,17 +59,17 @@ function loginCheck(userdataJSON){
 function validLogin(userdata){
   var name = document.getElementById("username").value;
     if(userdata['role'] == 'student'){
-      window.location.href ="index.html?data="+JSON.stringify(userdata)+"&username="+name;
+      window.location.href ="index.html?data="+JSON.stringify(userdata)+"&username="+name+"&role="+userdata['role'];
       return;
     }
 
     if(userdata['role'] == 'ucitel'){
-      window.location.href ="indexTeacher.html?data=userdata";
+      window.location.href ="indexTeacher.html?data="+JSON.stringify(userdata)+"&role="+userdata['role'];
       return;
     }
 
     if(userdata['role'] == 'admin'){
-      window.location.href ="indexAdmin.html?data=userdata";
+      window.location.href ="indexAdmin.html?data="+JSON.stringify(userdata)+"&role="+userdata['role'];
       return;
     }
     

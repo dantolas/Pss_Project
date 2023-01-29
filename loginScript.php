@@ -83,16 +83,7 @@
         return preg_match('/[\'^£$%&*()}{#~?><>,|=+¬-]/', $username);
     }
 
-    function echoDbData(){
-        if($data == null) {
-            echo "null";
-            return;
-        }
-        
-        foreach($data[0] as $value){
-            echo $value."  ";
-        }
-    }
+    
 
     function printDBData($data){
         

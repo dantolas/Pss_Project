@@ -1,8 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@300&display=swap');
 
 body{
     background: linear-gradient(to right, #66D3FA, #3C99DC);
-    font-family: 'Montserrat', sans-serif;
+    
+}
+
+body *{
+    font-family: 'Unbounded', cursive;
 }
 
 header{
@@ -33,4 +37,34 @@ header{
     font-size: 14px;
     font-style: oblique;
 }
+
+#rozvrh{
+    border: 2px solid black;
+    width: 100%;
+}
+
+
+.row{
+    margin-top: 3px;
+    padding: 2px;
+    width: 100%;
+    text-align: center;
+}
+
+.col{
+    text-align: center;
+    background-color: #202020;
+    color: aliceblue;
+    border-radius: 15px;
+    margin-top: 3px;
+    
+    width: 600px;
+    height: 40px;
+}
+
+.col span{
+    margin-top: 5px;
+}
+
+
 
