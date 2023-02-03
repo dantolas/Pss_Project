@@ -21,12 +21,11 @@ header{
     width: 10rem;
 }
 
-#loginInfo{
+#loginInfoRole{
     font-size: larger;
     font-weight: 600;
     width: 100%;
 }
-
 
 #userSpan{
     font-size: 14px;
@@ -39,32 +38,37 @@ header{
 }
 
 #rozvrh{
-    border: 2px solid black;
-    width: 100%;
-}
-
-
-.row{
-    margin-top: 3px;
-    padding: 2px;
-    width: 100%;
-    text-align: center;
-}
-
-.col{
-    text-align: center;
-    background-color: #202020;
-    color: aliceblue;
-    border-radius: 15px;
-    margin-top: 3px;
     
-    width: 600px;
-    height: 40px;
+    border: 2px solid black;
+    border-radius: 2px;
+    overflow: hidden;
+    padding: 1px;
+    
 }
 
-.col span{
-    margin-top: 5px;
+
+
+#predmet{
+    background: #142d4c;
+    color: #ffe9e3;
+    border: 1px solid black;
+    border-radius: 5px;
+    text-align: center;
 }
+#den{
+    
+    color: #ffe9e3;
+}
+#predmet span{
+    
+    margin: 0 auto;
+    padding: 1px;
+    
+    
+}
+
+
+
 
 
 

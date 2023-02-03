@@ -1,5 +1,5 @@
 <?php
-
+    #region <Main code>
     include_once "db/db.php";
 
     
@@ -26,29 +26,19 @@
         }
 
     }else echo("Error");
+    #endregion
 
-
-    
-    
-  
-    
-
-   
-
-    function printUserByMail() {
-
-    }
-
+    #region <Fetch userdata by username - child to getUserFromDatabase()>
     function getUserByName($username,$db){
 
-        $sql_select = "SELECT jmeno,prijmeni,email,password,role FROM ucitel WHERE username = '$username'";       
+        $sql_select = "SELECT jmeno,prijmeni,email,password,role,username FROM ucitel WHERE username = '$username'";       
             $sql_prov = $db->prepare($sql_select);
             $sql_prov->execute();
             $data = $sql_prov->fetchAll(PDO::FETCH_ASSOC);
 
         if($data != null) return $data;
 
-        $sql_select = "SELECT jmeno,prijmeni,email,password FROM student WHERE username = '$username'";       
+        $sql_select = "SELECT jmeno,prijmeni,email,password,username FROM student WHERE username = '$username'";       
         $sql_prov = $db->prepare($sql_select);
         $sql_prov->execute();
         $data = $sql_prov->fetchAll(PDO::FETCH_ASSOC);
@@ -59,18 +49,19 @@
         return $data;
 
     }
-
-    //Function to fetch user info with email
+    #endregion
+    
+    #region <Fetch userdata by email - child to getUserFromDatabase()>
     function getUserByMail($email,$db){
 
-        $sql_select = "SELECT jmeno,prijmeni,email,password,role FROM ucitel WHERE email = '$email'";       
+        $sql_select = "SELECT jmeno,prijmeni,email,password,role,username FROM ucitel WHERE email = '$email'";       
             $sql_prov = $db->prepare($sql_select);
             $sql_prov->execute();
             $data = $sql_prov->fetchAll(PDO::FETCH_ASSOC);
 
         if($data != null)return $data;
 
-        $sql_select = "SELECT jmeno,prijmeni,password,email FROM student WHERE email = '$email'";       
+        $sql_select = "SELECT jmeno,prijmeni,password,email,username FROM student WHERE email = '$email'";       
         $sql_prov = $db->prepare($sql_select);
         $sql_prov->execute();
         $data = $sql_prov->fetchAll(PDO::FETCH_ASSOC);
@@ -78,25 +69,9 @@
         $data[0]['role'] = 'student';
         return $data;
     }
-    //Regex check proti SQLinjekcim - true if validation failed
-    function usernameValidation($username){
-        return preg_match('/[\'^£$%&*()}{#~?><>,|=+¬-]/', $username);
-    }
-
-    
-
-    function printDBData($data){
+    #endregion
         
-        if($data == null) {
-            print("null");
-            return;
-        }
-        
-        foreach($data[0] as $value){
-            print($value."  ");
-        }
-    }
-    //Gets usere information from database
+    #region <Fetch userdata from database>
     function getUserFromDatabase($username,$db){
         
         if(usernameValidation($username)) return null;
@@ -116,8 +91,15 @@
         return $data;
     
     }
+    #endregion
+    
+    #region <SQLInjection check>
+    function usernameValidation($username){
+        return preg_match('/[\'^£$%&*()}{#~?><>,|=+¬-]/', $username);
+    }
+    #endregion
 
-    //Validate login
+    #region <Login validation>
     function validateLogin($data,$password){
         if($data == null) return false;
         if(count($data) > 1){
@@ -131,5 +113,5 @@
         }
         return false;
     }
-
+    #endregion
 ?>

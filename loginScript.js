@@ -1,21 +1,16 @@
 
-//---Main Code
+//#region <Main>
 console.log('login js fired');
 
 const submitButton = document.querySelector("#submit");
 submitButton.addEventListener('click',function(e){
    e.preventDefault();
   
-    AjaxPost();
-   
-  // const userdata = JSON.parse(userdataJson);
-  // console.log(userdata['username']);
-  
-
+   AjaxPost();
 })
-//---
+//#endregion
 
-//Function that just turns submitted form data to a JSON string
+//#region <formTurnedToJsonString>
 function formToJsonString(){
   const form = document.querySelector("#form");
   let formdata = new FormData(form);
@@ -27,10 +22,9 @@ function formToJsonString(){
   formString+="}"
   return formString;
 }
+//#endregion
 
-
-
-//Function that sends a request to PHP 
+//#region <AjaxRequest - currently not used>
 function AjaxRequest(str) {
   console.log("AjaxRequest fired");
   //const url = "loginScript.php?"+str
@@ -46,7 +40,9 @@ function AjaxRequest(str) {
     xhr.send(null);
   }
 }  
+//#endregion
 
+//#region <Login check>
 function loginCheck(userdataJSON){
   let userdata = JSON.parse(userdataJSON);
   if(userdata['login'] == "valid"){
@@ -55,27 +51,31 @@ function loginCheck(userdataJSON){
     invalidLogin(userdata);
   }
 };
+//#endregion
 
+//#region <Valid login handle>
 function validLogin(userdata){
-  var name = document.getElementById("username").value;
+  var name = userdata['username'];
+  console.log("Username:"+name);
     if(userdata['role'] == 'student'){
       window.location.href ="index.html?data="+JSON.stringify(userdata)+"&username="+name+"&role="+userdata['role'];
       return;
     }
 
     if(userdata['role'] == 'ucitel'){
-      window.location.href ="indexTeacher.html?data="+JSON.stringify(userdata)+"&role="+userdata['role'];
+      window.location.href ="indexTeacher.html?data="+JSON.stringify(userdata)+"&role="+userdata['role']+"&username="+name;
       return;
     }
 
     if(userdata['role'] == 'admin'){
-      window.location.href ="indexAdmin.html?data="+JSON.stringify(userdata)+"&role="+userdata['role'];
+      window.location.href ="indexAdmin.html?data="+JSON.stringify(userdata)+"&role="+userdata['role']+"&username="+name;
       return;
     }
     
 }
+//#endregion
 
-//#region Invalid Login - Informs user about wrong username or password
+//#region <Invalid Login handle - Informs user about wrong username or password>
 function invalidLogin(userdata){
   
     if(typeof userdata['jmeno'] != 'undefined'){
@@ -94,7 +94,7 @@ function invalidLogin(userdata){
 }
 //#endregion
 
-//#region Original ajax post
+//#region <Original ajax post>
 //Function that can send a post to PHP
 //------------------------------------
 //=>This was supposed to be the main function to send a post to PHP
@@ -139,6 +139,7 @@ function invalidLogin(userdata){
 // }
 //#endregion
 
+//#region <AjaxPost to server- most important function>
 function AjaxPost() {
   var name = document.getElementById("username").value;
   var password = document.getElementById("password").value;
@@ -153,8 +154,9 @@ function AjaxPost() {
                                   loginCheck(res);
                   },
           error: function() {
-            alert('Not Okay');
+            alert('Something went wrong. Server might not be running.');
           }
       });
  
-  }
+}
+//#endregion
