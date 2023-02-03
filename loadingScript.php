@@ -61,7 +61,7 @@
 
     #region <>
     function fetchStudentRozvrh($username,$db){
-        $sql_select = "SELECT predmet.zkratka as Predmet, predmet.poradi, rozvrh_den.den as Den, ucitel.zkratka as ucitel
+        $sql_select = "SELECT predmet.zkratka as Predmet, predmet.poradi, rozvrh_den.den as Den, ucitel.zkratka as ucitel, predmet.ucebna as ucebna
         FROM student inner join trida on student.username = '$username' and student.trida_id = trida.id
         inner join rozvrh_tyden on rozvrh_tyden.trida_id = trida.id
         inner join rozvrh_den on rozvrh_den.tyden_id = rozvrh_tyden.id
@@ -84,7 +84,7 @@
         
         
 
-        $sql_select = "SELECT ucitel.jmeno, rozvrh_tyden.id as tyden, rozvrh_den.den as Den, predmet.zkratka as Predmet
+        $sql_select = "SELECT ucitel.jmeno, rozvrh_tyden.id as tyden, rozvrh_den.den as Den, predmet.zkratka as Predmet, predmet.ucebna as ucebna
         from ucitel inner join rozvrh_tyden on ucitel.username = '$username' and ucitel.id = rozvrh_tyden.ucitel_id
         inner join rozvrh_den on rozvrh_den.tyden_id = rozvrh_tyden.id
         inner join predmet on predmet.rozvrh_den_id = rozvrh_den.id

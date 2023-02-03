@@ -49,22 +49,35 @@ header{
 
 
 #predmet{
-    background: #142d4c;
+    background: #4B9CD3;
     color: #ffe9e3;
     border: 1px solid black;
     border-radius: 5px;
     text-align: center;
 }
+
+#cas{
+    background: #005A9C;
+    color: #ffe9e3;
+    border: 1px solid black;
+    border-radius: 5px;
+    text-align: center;
+    
+}
 #den{
     
-    color: #ffe9e3;
+    color: black;
+}
+#ucebna{
+    font-size: small;
 }
 #predmet span{
-    
     margin: 0 auto;
     padding: 1px;
-    
-    
+}
+
+#ucitel{
+    font-size: smaller;
 }
 
 

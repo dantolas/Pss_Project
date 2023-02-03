@@ -62,7 +62,7 @@ function AjaxPostRozvrh() {
                 success: function(res){  
                                         //do what you want here...
                                         
-                                        let rozvrh = loadAjaxPostResponse(res);
+                                        let rozvrh = createRozvrhSkeleton(res);
                                         createRozvrh(rozvrh);
                         },
                 error: function() {
@@ -73,9 +73,8 @@ function AjaxPostRozvrh() {
     }
     //#endregion
 
-
-//#region <Takes response from AjaxPost() and builds the basic schedule skeleton>
-function loadAjaxPostResponse(res){
+//#region <Takes response from AjaxPost() and builds the basic  schedule skeleton>
+function createSuplRozvrhSkeleton(res){
         console.log("Res:"+res);
         res = JSON.parse(res);
         let rozvrh = {};
@@ -85,7 +84,40 @@ function loadAjaxPostResponse(res){
         rozvrh.streda =[];
         rozvrh.ctvrtek =[];
         rozvrh.patek =[];
+        
+        function chooseChangedLessons(){}
 
+        res.forEach(predmet => {
+                if(predmet == undefined || predmet == null ) return;
+                if(predmet['Den'] == null) return;
+                if(predmet['Den'].toUpperCase() == 'PONDELI') rozvrh.pondeli.push(predmet);
+                if(predmet['Den'].toUpperCase() == 'UTERY') rozvrh.utery.push(predmet);
+                if(predmet['Den'].toUpperCase() == 'STREDA') rozvrh.streda.push(predmet);
+                if(predmet['Den'].toUpperCase() == 'CTVRTEK') rozvrh.ctvrtek.push(predmet);
+                if(predmet['Den'].toUpperCase() == 'PATEK') rozvrh.patek.push(predmet);
+                
+        });
+   
+        return rozvrh;
+        
+}
+//#endregion
+
+
+
+
+
+//#region <Takes response from AjaxPost() and builds the basic schedule skeleton>
+function createRozvrhSkeleton(res){
+        console.log("Res:"+res);
+        res = JSON.parse(res);
+        let rozvrh = {};
+        
+        rozvrh.pondeli =[];
+        rozvrh.utery =[];
+        rozvrh.streda =[];
+        rozvrh.ctvrtek =[];
+        rozvrh.patek =[];
         
         res.forEach(predmet => {
                 if(predmet == undefined || predmet == null ) return;
@@ -97,10 +129,7 @@ function loadAjaxPostResponse(res){
                 if(predmet['Den'].toUpperCase() == 'PATEK') rozvrh.patek.push(predmet);
                 
         });
-        
-        
-        
-        
+   
         return rozvrh;
         
 }
@@ -127,7 +156,7 @@ function instantiateRozvrh(rozvrh){
 
                 var rowSpan = document.createElement('span');
                 rowSpan.className = 'col-md-1';
-                rowSpan.id = 'cas';
+                
                 rowSpan.innerHTML = '';
                 row.append(rowSpan);
                 
@@ -147,7 +176,7 @@ function instantiateRozvrh(rozvrh){
                 for(let i = 0; i < 10; i++){
 
                         var div = document.createElement('div');
-                        div.id = 'predmet';
+                        div.id = 'cas';
                         div.className = 'col-1';
                         
 
@@ -182,20 +211,49 @@ function instantiateRozvrh(rozvrh){
                 rowSpan.innerHTML = den+':';
                 row.append(rowSpan);
 
+                function compare(a,b){
+                        if(a.poradi < b.poradi){
+                                return -1;
+                        }
+                        if(a.poradi > b.poradi){
+                                return 1;
+                        }
+                        return 0;
+                }
+
+                rozvrh[den].sort(compare);
+
+
+                
+
                 rozvrh[den].forEach(predmetObjekt => {
                         
                         var div = document.createElement('div');
                         div.id = 'predmet';
-                        div.className = 'col-md-1';
+                        div.className = 'col-md-1 d-flex flex-column position-relative';
                         
 
-                        var divSpan = document.createElement('span');
+                        var predmetSpan = document.createElement('span');
+                        predmetSpan.innerHTML = predmetObjekt['Predmet'];
+                        predmetSpan.id = 'zkratka';
+                        div.appendChild(predmetSpan);
+
                         if(predmetObjekt['ucitel'] != undefined){
-                                divSpan.innerHTML = predmetObjekt["Predmet"] + '-' + predmetObjekt["ucitel"];   
-                        }else{divSpan.innerHTML = predmetObjekt["Predmet"];}
-                        
+                        var ucitelSpan = document.createElement('span');
+                        ucitelSpan.innerHTML = predmetObjekt['ucitel'];
+                        ucitelSpan.id = 'ucitel';
+                        div.appendChild(ucitelSpan);
+                        }
 
-                        div.appendChild(divSpan);
+                        var tridaSpan = document.createElement('span');
+                        tridaSpan.className = 'position-absolute top-0 end-0 m-1';
+                        tridaSpan.innerHTML = predmetObjekt['ucebna'];
+                        tridaSpan.id = 'ucebna';
+                        div.appendChild(tridaSpan);
+
+                        
+                        
+                        
                         
                         row.appendChild(div);
                 });
