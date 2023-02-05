@@ -1,6 +1,7 @@
 //#region <Main code>
 let params = new URLSearchParams(window.location.search);
 var userdata = JSON.parse(params.get('data'));
+console.log('loading js fired');
 
 const divPondeli = document.querySelector("#pondeli");
 const divUtery = document.querySelector("#utery");
@@ -11,14 +12,37 @@ const divPatek = document.querySelector("#patek");
 const userInfo = document.querySelector("#loginInfoUser");
 userInfo.innerHTML = userdata['prijmeni']+" "+userdata['jmeno'];
 
-console.log('loading js fired');
-
-console.log('Username:'+params.get('username'));
 AjaxPostRozvrh();
 
 if(params.get('role') == 'student'){
         AjaxPostTrida();
 }else changeRozvrhTarget(userdata['username']);
+
+const dropdown = document.querySelector('#dropdown');
+
+const rozvrhSelector = document.querySelector('#rozvrhSelector');
+rozvrhSelector.addEventListener('click',function(){
+        const node = document.querySelector('#rozvrh');
+        while(node.firstChild){
+                node.removeChild(node.lastChild);
+        }
+        dropdown.innerHTML = node.innerHTML;
+        AjaxPostRozvrh();
+}) 
+
+const suplSelector = document.querySelector('#suplSelector');
+suplSelector.addEventListener('click',function(){
+        const node = document.querySelector('#rozvrh');
+        console.log('Rozvrh selected.');
+        while(node.firstChild){
+                node.removeChild(node.lastChild);
+        }
+        dropdown.innerHTML = node.innerHTML;
+        AjaxPostSupl();
+})
+
+
+
 //#endregion
 
 //#region <Method that just changes the label on the page saying whose schedule it is>
@@ -71,45 +95,92 @@ function AjaxPostRozvrh() {
             });
        
     }
-    //#endregion
+//#endregion
 
-//#region <Takes response from AjaxPost() and builds the basic  schedule skeleton>
-function createSuplRozvrhSkeleton(res){
-        console.log("Res:"+res);
-        res = JSON.parse(res);
-        let rozvrh = {};
+//#region <Post to php using ajax to get schedule>
+function AjaxPostSupl() {
+        var username = params.get('username');
+        var role = params.get('role');
         
-        rozvrh.pondeli =[];
-        rozvrh.utery =[];
-        rozvrh.streda =[];
-        rozvrh.ctvrtek =[];
-        rozvrh.patek =[];
         
-        function chooseChangedLessons(){}
+        $.ajax({
+                type : "POST",  //type of method
+                url  : "loadingScript.php",  //your page
+                data : { username : username, role : role, header : 'rozvrh'},// passing the values
+                success: function(res){  
+                                        //do what you want here...
+                                        
+                                        let rozvrh = createSuplRozvrhSkeleton(res);
+                                        createRozvrh(rozvrh);
+                        },
+                error: function() {
+                  alert('Something went wrong. Server might not be running.');
+                }
+            });
+       
+    }
+//#endregion
 
-        res.forEach(predmet => {
-                if(predmet == undefined || predmet == null ) return;
-                if(predmet['Den'] == null) return;
-                if(predmet['Den'].toUpperCase() == 'PONDELI') rozvrh.pondeli.push(predmet);
-                if(predmet['Den'].toUpperCase() == 'UTERY') rozvrh.utery.push(predmet);
-                if(predmet['Den'].toUpperCase() == 'STREDA') rozvrh.streda.push(predmet);
-                if(predmet['Den'].toUpperCase() == 'CTVRTEK') rozvrh.ctvrtek.push(predmet);
-                if(predmet['Den'].toUpperCase() == 'PATEK') rozvrh.patek.push(predmet);
-                
-        });
-   
-        return rozvrh;
-        
+//#region <Removes element from an array based on reference>
+function removeArrayElement(array,element){
+        let index = array.indexOf(element);
+        if(index !== -1) {
+                array.splice(index, 1);
+        }   
 }
 //#endregion
 
+//#region <Takes response from AjaxPost() and builds the basic  schedule skeleton>
+function createSuplRozvrhSkeleton(res){
+        res = JSON.parse(res);
+        let rozvrh = {};
+        
+        rozvrh.pondeli =[];
+        rozvrh.utery =[];
+        rozvrh.streda =[];
+        rozvrh.ctvrtek =[];
+        rozvrh.patek =[];
+        
+        
+        
 
+        res.forEach(predmet => {
+                if(predmet == undefined || predmet == null ) return;
+                if(predmet['Den'] == null) return;
+                if(predmet['Den'].toUpperCase() == 'PONDELI') rozvrh.pondeli.push(predmet);
+                if(predmet['Den'].toUpperCase() == 'UTERY') rozvrh.utery.push(predmet);
+                if(predmet['Den'].toUpperCase() == 'STREDA') rozvrh.streda.push(predmet);
+                if(predmet['Den'].toUpperCase() == 'CTVRTEK') rozvrh.ctvrtek.push(predmet);
+                if(predmet['Den'].toUpperCase() == 'PATEK') rozvrh.patek.push(predmet);
+                
+        });
 
+        function removeNonChangedLessons(rozvrh){
 
+                Object.keys(rozvrh).forEach(key => {
+                        rozvrh[key].forEach(predmet =>{
+                                rozvrh[key].forEach(jinejPredmet =>{
+                                        if(predmet['poradi'] == jinejPredmet['poradi'] && predmet != jinejPredmet){
+                                                if(predmet['nahradni'] == 1){
+                                                        removeArrayElement(rozvrh[key],jinejPredmet);
+                                                        return;
+                                                        }else if(jinejPredmet['nahradni'] == 1){
+                                                        removeArrayElement(rozvrh[key],predmet);
+                                                        return;
+                                                        }   
+                                        }
+                                })
+                        })
+                });
+        }
+        
+        removeNonChangedLessons(rozvrh);
+        return rozvrh;
+}
+//#endregion
 
 //#region <Takes response from AjaxPost() and builds the basic schedule skeleton>
 function createRozvrhSkeleton(res){
-        console.log("Res:"+res);
         res = JSON.parse(res);
         let rozvrh = {};
         
@@ -129,7 +200,19 @@ function createRozvrhSkeleton(res){
                 if(predmet['Den'].toUpperCase() == 'PATEK') rozvrh.patek.push(predmet);
                 
         });
-   
+        
+        function removeChangedLessons(rozvrh){
+                
+                Object.keys(rozvrh).forEach(key => {
+                        rozvrh[key].forEach(predmet =>{
+                                if(predmet['nahradni'] == 1){
+                                        removeArrayElement(rozvrh[key],predmet); 
+                                }})
+                });
+        
+        }
+
+        removeChangedLessons(rozvrh);
         return rozvrh;
         
 }
@@ -146,7 +229,7 @@ function createRozvrh(rozvrh){
 //#endregion
 
 //#region <Instantiating rozvrh - child method to createRozvrh()>
-function instantiateRozvrh(rozvrh){
+function instantiateRozvrh(rozvrh,supl){
         console.log("Rozvrh instantiation fired"); 
         //#region Instantiating times 
         function  instantiateTimes(){
@@ -202,7 +285,7 @@ function instantiateRozvrh(rozvrh){
                 
 
                 var row = document.createElement('div');
-                row.className = 'row ml-1 row-cols-lg-10 row-cols-md-10';
+                row.className = 'row mb-1 row-cols-lg-10 row-cols-md-10';
                 row.id = 'row';
 
                 var rowSpan = document.createElement('span');
@@ -230,6 +313,7 @@ function instantiateRozvrh(rozvrh){
                         
                         var div = document.createElement('div');
                         div.id = 'predmet';
+                        if(predmetObjekt['nahradni'] == '1') div.id ='nahradniPredmet';
                         div.className = 'col-md-1 d-flex flex-column position-relative';
                         
 

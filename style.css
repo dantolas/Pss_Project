@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@300&display=swap');
 
 body{
-    background: linear-gradient(to right, #66D3FA, #3C99DC);
+    background: linear-gradient(to right, #3e4a61, #393e46);
     
 }
 
@@ -38,9 +38,9 @@ header{
 }
 
 #rozvrh{
-    
+    background: linear-gradient(to right, #66D3FA, #3C99DC);
     border: 2px solid black;
-    border-radius: 2px;
+    border-radius: 10px;
     overflow: hidden;
     padding: 1px;
     
@@ -56,6 +56,14 @@ header{
     text-align: center;
 }
 
+#nahradniPredmet{
+    background: #D22B2B;
+    color: #ffe9e3;
+    border: 1px solid black;
+    border-radius: 5px;
+    text-align: center;
+}
+
 #cas{
     background: #005A9C;
     color: #ffe9e3;
@@ -65,8 +73,10 @@ header{
     
 }
 #den{
-    
     color: black;
+    border-radius: 5px;
+    font-weight: bold;
+    
 }
 #ucebna{
     font-size: small;
@@ -80,7 +90,11 @@ header{
     font-size: smaller;
 }
 
+#submit{white-space:normal; word-wrap: break-word;}
 
+#rozvrhLabel{
+    color: #ffe9e3;
+}
 
 
 
