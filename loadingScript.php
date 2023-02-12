@@ -2,23 +2,31 @@
 
     include_once "db/db.php";
 
-
-    if (!isset($_POST['header'])){
-        echo "Error : Header of request not set."; return;
-    }
+    handlePost($_POST,$db);
+    #region <Post handler function>
+    function handlePost($POST,$db){
+        if (!isset($POST['header'])){
+            echo "Error : Header of request not set."; return;
+        }
+        
     
-
-    if($_POST['header'] == 'rozvrh'){
+        if($POST['header'] == 'rozvrh'){
+        
+        fetchRozvrhByUsername($db); return;
+        }
     
-    fetchRozvrh($db);
-    }
+        if($POST['header'] == 'trida'){
+        fetchTrida($_POST['username'],$db); return;
+        }
 
-    if($_POST['header'] == 'trida'){
-    fetchTrida($_POST['username'],$db);
+        if($POST['header'] == 'rozvrh_trida'){
+            fetchClassRozvrh($_POST['trida'],$db); return;
+        }
     }
-    
+    #endregion
 
-    function fetchRozvrh($db){
+    #region <Fetching rozvrh by username>
+    function fetchRozvrhByUsername($db){
         if(isset($_POST['username']) && isset($_POST['role'])){
         
             $role = $_POST['role'];
@@ -41,7 +49,8 @@
     
         }else echo(" Error : Username or role not set in post request");
     }
-
+    #endregion
+    #region <Fetching class name by username>
     function fetchTrida($username,$db){
 
         if(!isset($_POST['username'])){
@@ -58,7 +67,7 @@
         
         echo $data[0]['nazev'];
     }
-
+    #endregion
     #region <>
     function fetchStudentRozvrh($username,$db){
         $sql_select = "SELECT predmet.zkratka as Predmet, predmet.poradi, rozvrh_den.den as Den, ucitel.zkratka as ucitel, predmet.ucebna as ucebna, predmet.nahradni as nahradni
@@ -79,6 +88,26 @@
     }
     #endregion
     
+    #region <>
+    function fetchClassRozvrh($class,$db){
+        $sql_select = "SELECT predmet.zkratka as Predmet, predmet.poradi, rozvrh_den.den as Den, ucitel.zkratka as ucitel, predmet.ucebna as ucebna, predmet.nahradni as nahradni
+        from trida
+        inner join rozvrh_tyden on trida.nazev = $class and rozvrh_tyden.trida_id = trida.id
+        inner join rozvrh_den on rozvrh_den.tyden_id = rozvrh_tyden.id
+        inner join predmet on predmet.rozvrh_den_id = rozvrh_den.id
+        inner join ucitel on predmet.ucitel_id = ucitel.id
+        ";
+
+        
+        $sql_prov = $db->prepare($sql_select);
+        $sql_prov->execute();
+        $data = $sql_prov->fetchAll(PDO::FETCH_ASSOC);
+
+        
+        return json_encode($data);
+    }
+    #endregion
+
     #region<>
     function fetchUcitelRozvrh($username,$db){
         

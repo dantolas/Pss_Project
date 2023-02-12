@@ -96,6 +96,19 @@ header{
     color: #ffe9e3;
 }
 
+#searchDiv{
+    display: flex;
+    align-items: center;
+}
+
+
+#searchIcon{
+    z-index: 10;
+    cursor: pointer;
+    padding: 2px;
+    margin-left: 2px;
+}
+
 
 
 
