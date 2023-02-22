@@ -38,7 +38,8 @@ header{
 }
 
 #rozvrh{
-    background: linear-gradient(to right, #66D3FA, #3C99DC);
+    background: linear-gradient(to right, #edc2a2, #eab995); 
+    /*background: linear-gradient(to right, #66D3FA, #3C99DC); */
     border: 2px solid black;
     border-radius: 10px;
     overflow: hidden;
@@ -56,6 +57,8 @@ header{
     text-align: center;
 }
 
+
+
 #nahradniPredmet{
     background: #D22B2B;
     color: #ffe9e3;
@@ -71,15 +74,15 @@ header{
     border-radius: 5px;
     text-align: center;
     
+    
 }
 #den{
     color: black;
     border-radius: 5px;
     font-weight: bold;
-    
 }
 #ucebna{
-    font-size: small;
+    font-size: 0.89vw;
 }
 #predmet span{
     margin: 0 auto;
@@ -108,6 +111,8 @@ header{
     padding: 2px;
     margin-left: 2px;
 }
+
+
 
 
 

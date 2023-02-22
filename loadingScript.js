@@ -1,6 +1,10 @@
 //#region <Main code>
+
+//#region <Variable declaration>
 let params = new URLSearchParams(window.location.search);
 var userdata = JSON.parse(params.get('data'));
+
+
 console.log('loading js fired');
 
 const divPondeli = document.querySelector("#pondeli");
@@ -11,50 +15,89 @@ const divPatek = document.querySelector("#patek");
 
 const userInfo = document.querySelector("#loginInfoUser");
 userInfo.innerHTML = userdata['prijmeni']+" "+userdata['jmeno'];
+//#endregion
 
-AjaxPostRozvrh();
+//Getting the default rozvrh by user login info
+AjaxPostRozvrh(userdata['username'],userdata['role']);
 
 if(params.get('role') == 'student'){
-        AjaxPostTrida();
-}else changeRozvrhTarget(userdata['username']);
+        AjaxPostTrida(userdata['username']);
+}else changeRozvrhTarget(userdata['username'][0].toUpperCase()+userdata['username'].slice(1));
 
+//#region <Dropdown menu>
 const dropdown = document.querySelector('#dropdown');
-
 const rozvrhSelector = document.querySelector('#rozvrhSelector');
 rozvrhSelector.addEventListener('click',function(){
-        const node = document.querySelector('#rozvrh');
-        while(node.firstChild){
-                node.removeChild(node.lastChild);
-        }
-        dropdown.innerHTML = node.innerHTML;
-        AjaxPostRozvrh();
+        clearChildren(document.querySelector('#rozvrh'));
+        dropdown.innerHTML = "Rozvrh";
+        AjaxPostRozvrh(userdata['username'],userdata['role']);
 }) 
 
 const suplSelector = document.querySelector('#suplSelector');
 suplSelector.addEventListener('click',function(){
-        const node = document.querySelector('#rozvrh');
-        console.log('Rozvrh selected.');
-        while(node.firstChild){
-                node.removeChild(node.lastChild);
-        }
-        dropdown.innerHTML = node.innerHTML;
-        AjaxPostSupl();
+        clearChildren(document.querySelector('#rozvrh'));
+
+        dropdown.innerHTML = "Suplování";
+        AjaxPostSupl(userdata['username'],userdata['role']);
 })
+//#endregion
+
+//#region <Search bar>
+const searchBar = document.querySelector("#searchBar");
+
+const searchIcon = document.querySelector("#searchIcon");
+
+searchIcon.addEventListener('mousedown',function(){
+        searchIcon.style.background = "	#808588";
+        searchIcon.style.borderRadius = "5px";
+})
+
+
+searchIcon.addEventListener('click',function(){
+        console.log("Search fired.");
+        searchIcon.style.background = "inherit";
+        console.log(searchBar.value);
+
+        var reg = new RegExp("^[a-zA-Z_.-]{1}\\d{1}[a-zA-Z_.-]*$")
+
+        if(reg.test(searchBar.value)){
+                clearChildren(document.querySelector('#rozvrh'));
+                AjaxPostRozvrhClass(searchBar.value);
+                return;  
+        }
+
+
+        
+});
+
+//#endregion
 
 
 
 //#endregion
 
-//#region <Method that just changes the label on the page saying whose schedule it is>
+//#region <Name Change>
 function changeRozvrhTarget(labelText){
         const rozvrhTarget = document.querySelector("#rozvrhTarget");
                                     rozvrhTarget.innerHTML = labelText;
 }
 //#endregion
 
+//#region <Ajax Posts to php>
+
+//#region <Clear rozvrh> 
+function clearChildren(node){
+        console.log('Clearing rozvrh.');
+        while(node.firstChild){
+                node.removeChild(node.lastChild);
+        }
+        dropdown.innerHTML = node.innerHTML;
+}
+//#endregion
+
 //#region <Post to php using ajax to get className>
-function AjaxPostTrida() {
-    var username = params.get('username');
+function AjaxPostTrida(username) {
+    
     
     $.ajax({
             type : "POST",  //type of method
@@ -73,12 +116,9 @@ function AjaxPostTrida() {
 }
 //#endregion
 
-//#region <Post to php using ajax to get schedule>
-function AjaxPostRozvrh() {
-        var username = params.get('username');
-        var role = params.get('role');
-        
-        
+//#region <Post to php using ajax to get schedule BY USERNAME>
+function AjaxPostRozvrh(username,role) {
+        console.log(username);
         $.ajax({
                 type : "POST",  //type of method
                 url  : "loadingScript.php",  //your page
@@ -97,10 +137,33 @@ function AjaxPostRozvrh() {
     }
 //#endregion
 
-//#region <Post to php using ajax to get schedule>
-function AjaxPostSupl() {
-        var username = params.get('username');
-        var role = params.get('role');
+
+//#region <Post to php using ajax to get schedule BY CLASSNAME>
+function AjaxPostRozvrhClass(trida) {
+        
+        
+        $.ajax({
+                type : "POST",  //type of method
+                url  : "loadingScript.php",  //your page
+                data : { trida : trida, header : 'rozvrh_trida'},// passing the values
+                success: function(res){  
+                                        //do what you want here...
+                                        console.log(res);
+                                        let rozvrh = createRozvrhSkeleton(res);
+                                        createRozvrh(rozvrh);
+                        },
+                error: function() {
+                  alert('Something went wrong. Server might not be running.');
+                }
+            });
+       
+    }
+//#endregion
+
+
+//#region <Post to php using ajax to get suplovani>
+function AjaxPostSupl(username, role) {
+        
         
         
         $.ajax({
@@ -121,7 +184,10 @@ function AjaxPostSupl() {
     }
 //#endregion
 
-//#region <Removes element from an array based on reference>
+
+//#endregion
+
+//#region <Remove element by reference>
 function removeArrayElement(array,element){
         let index = array.indexOf(element);
         if(index !== -1) {
@@ -238,7 +304,7 @@ function instantiateRozvrh(rozvrh,supl){
                 row.id = 'row';
 
                 var rowSpan = document.createElement('span');
-                rowSpan.className = 'col-md-1';
+                rowSpan.className = 'col-md-2 col-lg-1 col-sm-4';
                 
                 rowSpan.innerHTML = '';
                 row.append(rowSpan);
@@ -260,7 +326,7 @@ function instantiateRozvrh(rozvrh,supl){
 
                         var div = document.createElement('div');
                         div.id = 'cas';
-                        div.className = 'col-1';
+                        div.className = 'col-md-2 col-lg-1 col-sm-4';
                         
 
                         var divSpan = document.createElement('span');
@@ -289,7 +355,7 @@ function instantiateRozvrh(rozvrh,supl){
                 row.id = 'row';
 
                 var rowSpan = document.createElement('span');
-                rowSpan.className = 'col-1';
+                rowSpan.className = 'col-md-2 col-lg-1 col-sm-4';
                 rowSpan.id = 'den';
                 rowSpan.innerHTML = den+':';
                 row.append(rowSpan);
@@ -302,19 +368,28 @@ function instantiateRozvrh(rozvrh,supl){
                                 return 1;
                         }
                         return 0;
-                }
+                };
 
                 rozvrh[den].sort(compare);
 
-
-                
-
+                //Exists to count at which order of a lesson we're at (first,second,third...)
+                let count = 1;
                 rozvrh[den].forEach(predmetObjekt => {
                         
+                        console.log("Poradi:"+predmetObjekt['poradi']+" count:"+count);
+                        //If there is an empty lesson, we create an empty div
+                        if(predmetObjekt['poradi'] > count){
+                                var div = document.createElement('div');
+                                div.id = 'emptyPredmet';
+                                div.className = 'col-md-2 col-lg-1 col-sm-4 d-flex flex-column position-relative';
+                                row.appendChild(div);
+                                count++;
+                        }
+
                         var div = document.createElement('div');
                         div.id = 'predmet';
                         if(predmetObjekt['nahradni'] == '1') div.id ='nahradniPredmet';
-                        div.className = 'col-md-1 d-flex flex-column position-relative';
+                        div.className = 'col-md-2 col-lg-1 col-sm-4 d-flex flex-column position-relative';
                         
 
                         var predmetSpan = document.createElement('span');
@@ -330,16 +405,14 @@ function instantiateRozvrh(rozvrh,supl){
                         }
 
                         var tridaSpan = document.createElement('span');
-                        tridaSpan.className = 'position-absolute top-0 end-0 m-1';
+                        tridaSpan.className = 'position-absolute top-0 end-0 ml-1 mr-1 p-1';
                         tridaSpan.innerHTML = predmetObjekt['ucebna'];
                         tridaSpan.id = 'ucebna';
                         div.appendChild(tridaSpan);
 
-                        
-                        
-                        
-                        
                         row.appendChild(div);
+                        
+                        count++;
                 });
 
                 

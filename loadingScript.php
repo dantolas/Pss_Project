@@ -3,6 +3,7 @@
     include_once "db/db.php";
 
     handlePost($_POST,$db);
+
     #region <Post handler function>
     function handlePost($POST,$db){
         if (!isset($POST['header'])){
@@ -22,6 +23,8 @@
         if($POST['header'] == 'rozvrh_trida'){
             fetchClassRozvrh($_POST['trida'],$db); return;
         }
+
+        echo "Unknown Header";
     }
     #endregion
 
@@ -50,7 +53,8 @@
         }else echo(" Error : Username or role not set in post request");
     }
     #endregion
-    #region <Fetching class name by username>
+    
+    #region <Fetching classname by username>
     function fetchTrida($username,$db){
 
         if(!isset($_POST['username'])){
@@ -68,7 +72,8 @@
         echo $data[0]['nazev'];
     }
     #endregion
-    #region <>
+    
+    #region <Fetching rozvrh for student - used in fetch by username>
     function fetchStudentRozvrh($username,$db){
         $sql_select = "SELECT predmet.zkratka as Predmet, predmet.poradi, rozvrh_den.den as Den, ucitel.zkratka as ucitel, predmet.ucebna as ucebna, predmet.nahradni as nahradni
         FROM student inner join trida on student.username = '$username' and student.trida_id = trida.id
@@ -88,11 +93,11 @@
     }
     #endregion
     
-    #region <>
+    #region <Fetching rozvrh by classname>
     function fetchClassRozvrh($class,$db){
         $sql_select = "SELECT predmet.zkratka as Predmet, predmet.poradi, rozvrh_den.den as Den, ucitel.zkratka as ucitel, predmet.ucebna as ucebna, predmet.nahradni as nahradni
         from trida
-        inner join rozvrh_tyden on trida.nazev = $class and rozvrh_tyden.trida_id = trida.id
+        inner join rozvrh_tyden on trida.nazev = '$class' and rozvrh_tyden.trida_id = trida.id
         inner join rozvrh_den on rozvrh_den.tyden_id = rozvrh_tyden.id
         inner join predmet on predmet.rozvrh_den_id = rozvrh_den.id
         inner join ucitel on predmet.ucitel_id = ucitel.id
@@ -104,11 +109,11 @@
         $data = $sql_prov->fetchAll(PDO::FETCH_ASSOC);
 
         
-        return json_encode($data);
+        echo json_encode($data);
     }
     #endregion
 
-    #region<>
+    #region <fetching rozvrh for teacher - used in fetch by username>
     function fetchUcitelRozvrh($username,$db){
         
         
