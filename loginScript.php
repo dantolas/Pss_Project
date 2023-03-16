@@ -31,14 +31,14 @@
     #region <Fetch userdata by username - child to getUserFromDatabase()>
     function getUserByName($username,$db){
 
-        $sql_select = "SELECT jmeno,prijmeni,email,password,role,username FROM ucitel WHERE username = '$username'";       
+        $sql_select = "SELECT id,role,password FROM ucitel WHERE username = '$username'";       
             $sql_prov = $db->prepare($sql_select);
             $sql_prov->execute();
             $data = $sql_prov->fetchAll(PDO::FETCH_ASSOC);
 
         if($data != null) return $data;
 
-        $sql_select = "SELECT jmeno,prijmeni,email,password,username FROM student WHERE username = '$username'";       
+        $sql_select = "SELECT password,id FROM student WHERE username = '$username'";       
         $sql_prov = $db->prepare($sql_select);
         $sql_prov->execute();
         $data = $sql_prov->fetchAll(PDO::FETCH_ASSOC);
@@ -54,14 +54,14 @@
     #region <Fetch userdata by email - child to getUserFromDatabase()>
     function getUserByMail($email,$db){
 
-        $sql_select = "SELECT jmeno,prijmeni,email,password,role,username FROM ucitel WHERE email = '$email'";       
+        $sql_select = "SELECT id,role,password FROM ucitel WHERE email = '$email'";       
             $sql_prov = $db->prepare($sql_select);
             $sql_prov->execute();
             $data = $sql_prov->fetchAll(PDO::FETCH_ASSOC);
 
         if($data != null)return $data;
 
-        $sql_select = "SELECT jmeno,prijmeni,password,email,username FROM student WHERE email = '$email'";       
+        $sql_select = "SELECT password,id FROM student WHERE email = '$email'";       
         $sql_prov = $db->prepare($sql_select);
         $sql_prov->execute();
         $data = $sql_prov->fetchAll(PDO::FETCH_ASSOC);

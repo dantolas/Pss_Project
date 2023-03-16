@@ -56,19 +56,18 @@ function loginCheck(userdataJSON){
 //#region <Valid login handle>
 function validLogin(userdata){
   var name = userdata['username'];
-  console.log("Username:"+name);
     if(userdata['role'] == 'student'){
-      window.location.href ="index.html?data="+JSON.stringify(userdata)+"&username="+name+"&role="+userdata['role'];
+      window.location.href ="index.html?"+"id="+userdata['id']+"&role="+userdata['role'];
       return;
     }
 
     if(userdata['role'] == 'ucitel'){
-      window.location.href ="indexTeacher.html?data="+JSON.stringify(userdata)+"&role="+userdata['role']+"&username="+name;
+      window.location.href ="indexTeacher.html?"+"id="+userdata['id']+"&role="+userdata['role'];
       return;
     }
 
     if(userdata['role'] == 'admin'){
-      window.location.href ="indexAdmin.html?data="+JSON.stringify(userdata)+"&role="+userdata['role']+"&username="+name;
+      window.location.href ="indexAdmin.html?"+"id="+userdata['id']+"&role="+userdata['role'];
       return;
     }
     
@@ -78,8 +77,7 @@ function validLogin(userdata){
 //#region <Invalid Login handle - Informs user about wrong username or password>
 function invalidLogin(userdata){
   
-    if(typeof userdata['jmeno'] != 'undefined'){
-      console.log("Password wrong");
+    if(typeof userdata['id'] != 'undefined'){
       document.querySelector('#passwordSpan').innerHTML = "Password incorrect.";
       document.querySelector('#passwordSpan').style.color = "red";
       document.querySelector('#userSpan').innerHTML = "";
@@ -150,7 +148,6 @@ function AjaxPost() {
           data : { name : name, password : password },// passing the values
           success: function(res){  
                                   //do what you want here...
-                                  console.log(res);
                                   loginCheck(res);
                   },
           error: function() {

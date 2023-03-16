@@ -2,19 +2,21 @@
 
 //#region <Variable declaration>
 let params = new URLSearchParams(window.location.search);
-var userdata = JSON.parse(params.get('data'));
+var userdata;
 
 
 console.log('loading js fired');
-
-const divPondeli = document.querySelector("#pondeli");
-const divUtery = document.querySelector("#utery");
-const divStreda = document.querySelector("#streda");
-const divCtvrtek = document.querySelector("#ctvrtek");
-const divPatek = document.querySelector("#patek");
+AjaxPostUser(params.get('id'),params.get('role'));
 
 const userInfo = document.querySelector("#loginInfoUser");
 userInfo.innerHTML = userdata['prijmeni']+" "+userdata['jmeno'];
+
+
+const classList = [];
+AjaxPostClassList();
+const teacherList = [];
+AjaxPostTeacherList();
+
 //#endregion
 
 //Getting the default rozvrh by user login info
@@ -45,6 +47,64 @@ suplSelector.addEventListener('click',function(){
 //#region <Search bar>
 const searchBar = document.querySelector("#searchBar");
 
+searchBar.addEventListener('keyup',function(e){
+        console.log(e);
+        clearChildren(document.querySelector("#myDropdown"));
+        const searchString = e.target.value.toUpperCase();
+        let filteredList = [];
+        if(searchString.length > 0){
+
+                 filteredList = classList.filter((classname) => {
+                        return (
+                                classname.toUpperCase().includes(searchString)
+                        )
+                })
+
+                if(filteredList.length == 0){
+                        filteredList = teacherList.filter((teacherName) =>{
+                                return(
+                                        teacherName.toUpperCase().includes(searchString)
+                                )
+                        }) 
+                }
+        }
+
+        if(filteredList.length > 0){
+
+                
+
+                filteredList.forEach(element => {
+
+                        
+
+                        const searchDropdownItem = document.createElement('a');
+                        searchDropdownItem.innerHTML = element;
+                        searchDropdownItem.className = "";
+                        searchDropdownItem.href = "google.com";
+                        searchDropdownItem.id = "searchItem";
+
+                        searchDropdownItem.addEventListener('click',function(){
+
+                        });
+        
+                        document.querySelector("#myDropdown").appendChild(searchDropdownItem);
+                        console.log("Appended:"+element);
+                        
+                });
+                
+                
+                console.log(document.querySelector("#myDropdown"));
+                
+        }
+        
+        console.log(filteredList);
+
+        
+        
+
+});
+
+
 const searchIcon = document.querySelector("#searchIcon");
 
 searchIcon.addEventListener('mousedown',function(){
@@ -72,8 +132,6 @@ searchIcon.addEventListener('click',function(){
 
 //#endregion
 
-
-
 //#endregion
 
 //#region <Name Change>
@@ -95,7 +153,7 @@ function clearChildren(node){
 }
 //#endregion
 
-//#region <Post to php using ajax to get className>
+//#region <Get classname>
 function AjaxPostTrida(username) {
     
     
@@ -116,7 +174,87 @@ function AjaxPostTrida(username) {
 }
 //#endregion
 
-//#region <Post to php using ajax to get schedule BY USERNAME>
+//#region <Get classList>
+function AjaxPostClassList() {
+    
+    
+        $.ajax({
+                type : "POST",  //type of method
+                url  : "loadingScript.php",  //your page
+                data : {header : 'classList'},// passing the values
+                success: function(res){  
+                                        //do what you want here...
+                                        
+
+                                        jsonObject = JSON.parse(res);
+
+                                        jsonObject.forEach(classObject =>{
+                                                classList.push(classObject.nazev)
+                                        });
+
+                                        // for(const classObject in jsonObject){
+                                        //         classList.push(classObject.nazev);
+                                        // }
+                                        
+                        },
+                error: function() {
+                  alert('Something went wrong. Server might not be running.');
+                }
+            });
+       
+    }
+//#endregion
+
+//#region <Get teacherList>
+function AjaxPostTeacherList() {
+    
+    
+        $.ajax({
+                type : "POST",  //type of method
+                url  : "loadingScript.php",  //your page
+                data : {header : 'teacherList'},// passing the values
+                success: function(res){  
+                                        //do what you want here...
+                                        
+
+                                        jsonObject = JSON.parse(res);
+
+                                        jsonObject.forEach(teacherObject =>{
+                                                teacherList.push(teacherObject.jmeno + " " + teacherObject.prijmeni);
+                                        });
+
+                                        
+                        },
+                error: function() {
+                  alert('Something went wrong. Server might not be running.');
+                }
+            });
+       
+    }
+//#endregion
+
+//#region <Get userinfo>
+function AjaxPostUser(id,role) {
+    
+    
+        $.ajax({
+                type : "POST",  //type of method
+                url  : "loadingScript.php",  //your page
+                data : {id:id,role:role, header : 'user'},// passing the values
+                success: function(res){  
+                                        //do what you want here...
+                                        userdata = JSON.parse(res);
+                        },
+                error: function() {
+                  alert('Something went wrong. Server might not be running.');
+                },
+                async : false
+            });
+       
+    }
+    //#endregion
+
+//#region <Get schedule via USERNAME>
 function AjaxPostRozvrh(username,role) {
         console.log(username);
         $.ajax({
@@ -137,8 +275,7 @@ function AjaxPostRozvrh(username,role) {
     }
 //#endregion
 
-
-//#region <Post to php using ajax to get schedule BY CLASSNAME>
+//#region <Get schedule via CLASSNAME>
 function AjaxPostRozvrhClass(trida) {
         
         
@@ -160,8 +297,7 @@ function AjaxPostRozvrhClass(trida) {
     }
 //#endregion
 
-
-//#region <Post to php using ajax to get suplovani>
+//#region <Get supplementary schedule>
 function AjaxPostSupl(username, role) {
         
         
@@ -196,7 +332,7 @@ function removeArrayElement(array,element){
 }
 //#endregion
 
-//#region <Takes response from AjaxPost() and builds the basic  schedule skeleton>
+//#region <Takes response from AjaxPosts and builds the basic supplementary schedule skeleton>
 function createSuplRozvrhSkeleton(res){
         res = JSON.parse(res);
         let rozvrh = {};
@@ -245,7 +381,7 @@ function createSuplRozvrhSkeleton(res){
 }
 //#endregion
 
-//#region <Takes response from AjaxPost() and builds the basic schedule skeleton>
+//#region <Takes response from AjaxPosts and builds the basic schedule skeleton>
 function createRozvrhSkeleton(res){
         res = JSON.parse(res);
         let rozvrh = {};
@@ -295,7 +431,7 @@ function createRozvrh(rozvrh){
 //#endregion
 
 //#region <Instantiating rozvrh - child method to createRozvrh()>
-function instantiateRozvrh(rozvrh,supl){
+function instantiateRozvrh(rozvrh){
         console.log("Rozvrh instantiation fired"); 
         //#region Instantiating times 
         function  instantiateTimes(){
@@ -376,7 +512,6 @@ function instantiateRozvrh(rozvrh,supl){
                 let count = 1;
                 rozvrh[den].forEach(predmetObjekt => {
                         
-                        console.log("Poradi:"+predmetObjekt['poradi']+" count:"+count);
                         //If there is an empty lesson, we create an empty div
                         if(predmetObjekt['poradi'] > count){
                                 var div = document.createElement('div');

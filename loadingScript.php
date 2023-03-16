@@ -12,19 +12,30 @@
         
     
         if($POST['header'] == 'rozvrh'){
-        
-        fetchRozvrhByUsername($db); return;
+            fetchRozvrhByUsername($db); return;
         }
     
         if($POST['header'] == 'trida'){
-        fetchTrida($_POST['username'],$db); return;
+            fetchTrida($_POST['username'],$db); return;
         }
 
         if($POST['header'] == 'rozvrh_trida'){
             fetchClassRozvrh($_POST['trida'],$db); return;
         }
 
-        echo "Unknown Header";
+        if($POST['header'] == 'user'){
+            getUserById($_POST['id'],$_POST['role'],$db);return;
+        }
+
+        if($POST['header'] == 'classList'){
+            fetchClassList($db);return;
+        }
+
+        if($POST['header'] == 'teacherList'){
+            fetchTeacherList($db);return;
+        }
+
+        echo "{Error:Unknown Header}";
     }
     #endregion
 
@@ -54,13 +65,39 @@
     }
     #endregion
     
+    #region <Fetching classList>
+    function fetchClassList($db){
+
+        $sql_select = "SELECT trida.nazev from trida";
+
+        $sql_prov = $db->prepare($sql_select);
+        $sql_prov->execute();
+        $data = $sql_prov->fetchAll(PDO::FETCH_ASSOC);
+        
+        
+        echo json_encode($data);
+        //echo $data;
+        //echo $data[0]['nazev'];
+    }
+    #endregion
+
+    #region <Fetching classList>
+    function fetchTeacherList($db){
+
+            $sql_select = "SELECT ucitel.jmeno,ucitel.prijmeni from ucitel";
+        
+            $sql_prov = $db->prepare($sql_select);
+            $sql_prov->execute();
+            $data = $sql_prov->fetchAll(PDO::FETCH_ASSOC);
+
+            echo json_encode($data);
+            //echo $data;
+            //echo $data[0]['jmeno'].' '.$data[0]['prijmeni'];
+        }
+    #endregion
+
     #region <Fetching classname by username>
     function fetchTrida($username,$db){
-
-        if(!isset($_POST['username'])){
-        echo "Error : Username not set in post.";
-        return;
-        }
 
         $sql_select = "SELECT trida.nazev from trida inner join student on trida.id = student.trida_id and student.username = '$username'
         ";
@@ -134,6 +171,34 @@
     }
     #endregion
     
-    
+    #region <Get userdata by id from db>
+    function getUserById($id,$role,$db){
+        $data = null;
+        if($role != 'student'){
+            $sql_select = "SELECT jmeno,prijmeni,role,username FROM ucitel WHERE id = $id";       
+            $sql_prov = $db->prepare($sql_select);
+            $sql_prov->execute();
+            $data = $sql_prov->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        if($data != null){
+            $json = json_encode($data[0]);
+            echo $json;
+            return;
+        }
+
+        $sql_select = "SELECT jmeno,prijmeni,username FROM student WHERE id = $id";       
+        $sql_prov = $db->prepare($sql_select);
+        $sql_prov->execute();
+        $data = $sql_prov->fetchAll(PDO::FETCH_ASSOC);
+        if($data != null){
+            $data[0]['role'] = 'student';
+            $json = json_encode($data[0]);
+            echo $json;
+            return;
+        } 
+        return;
+    }
+    #endregion
 
 ?>

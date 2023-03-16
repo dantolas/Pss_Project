@@ -2,16 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    
+    <link rel="stylesheet" href="style.css">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <!--<script src="loadingScript.php" defer></script>-->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
     <script src="loadingScript.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
     
-    <link rel="stylesheet" href="style.css">
     <title>Rozvrhy KutaC3b</title>
 </head>
 <body>
@@ -49,7 +48,7 @@
     <main>
         <div class="container d-flex p-2 " id="rozvrhLabel">
             <!-- Content here -->
-            <h1 class="h1 mr-2 p-2">Rozvrh:</h1>
+            <h1 id="rozvrhName" class="h1 mr-2 p-2">Rozvrh:</h1>
             <h1 class="h1 mr-2 p-2" id="rozvrhTarget"></h1>
             <div class="dropdown mt-2 p-2">
                 <button class="btn btn-secondary dropdown-toggle" id="dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -60,9 +59,21 @@
                   <li><a class="dropdown-item mr-2 p-2" id="suplSelector" href="#">Suplovani</a></li>
                 </ul>
             </div>
-            <div class="container" id="searchDiv">
-              <input type="text" id="searchBar" placeholder="C1a">
-              <i class="fa fa-search" id="searchIcon" aria-hidden="true"></i>
+
+            <div class="container d-flex justify-content-end" id="searchDiv">
+              <div id="searchStuffWrapper">
+                <i class="fa fa-search align-self-center" id="searchIcon" aria-hidden="true"></i>
+                <input type="text" class="align-self-center " id="searchBar" placeholder="Hledat třídu nebo učitele">
+                
+                <div id="myDropdown" >
+                      
+                  
+                </div>
+              </div>
+                
+              
+              
+
             </div>
           </div>
           
